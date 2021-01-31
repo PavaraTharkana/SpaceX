@@ -1,9 +1,9 @@
 pipeline {
     environment {
-   	 PROJECT = "iit-cc-cw"
- 	   APP_NAME = "cc-cw-api"
+   	 PROJECT = "spacex"
+ 	   APP_NAME = "spacexapi"
      BRANCH_NAME = "main"
-   	 IMAGE_TAG = "pavara/${PROJECT}:${env.BRANCH_NAME}.${env.BUILD_NUMBER}"
+   	 IMAGE_TAG = "janith/${PROJECT}:${env.BRANCH_NAME}.${env.BUILD_NUMBER}"
                 }
     agent any 
     options {
@@ -21,7 +21,7 @@ pipeline {
                   sh 'cp .gitignore images/'
                   sh 'docker build -t ${APP_NAME} images/.'
                   sh 'docker tag ${APP_NAME} ${IMAGE_TAG}'
-                  sh 'docker login -u pavaradatum -p ftd@010203'
+                  sh 'docker login -u janith -p Janith0771818404'
                   sh 'docker push ${IMAGE_TAG}'
                   sh 'docker image rm ${IMAGE_TAG}'
                   sh 'docker image rm ${APP_NAME}'
@@ -34,18 +34,18 @@ pipeline {
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cc-cw-api-deploy
+  name: spacex-deploy
 spec:
   selector:
     matchLabels:
-      app: cc-cw-api-stage
-      department: cc-cw-api-app
+      app: spacex-stage
+      department: spacex-app
   replicas: 2
   template:
     metadata:
       labels:
-        app: cc-cw-api-stage
-        department: cc-cw-api-app
+        app: spacex-stage
+        department: spacex-app
     spec:
       containers:
       - name: hello
@@ -58,21 +58,21 @@ EOF'''
 apiVersion: v1
 kind: Service
 metadata:
-  name: cc-cw-api-service
+  name: spacex-service
 spec:
   type: LoadBalancer
   selector:
-    app: cc-cw-api-stage
-    department: cc-cw-api-app
+    app: spacex-stage
+    department: spacex-app
   ports:
   - protocol: TCP
     port: 5000
     targetPort: 5000
 EOF'''         
-                  sh 'gcloud auth activate-service-account --key-file /var/lib/jenkins/.certificate/fluent-cable-301617-9205e11599c9.json'
+                  sh 'gcloud auth activate-service-account --key-file /var/lib/jenkins/.certificate/slwidgets-fd89f6333e67.json'
                   sh 'gcloud config set compute/zone asia-southeast1-b'
-                  sh 'gcloud config set project My First Project'
-                  sh 'gcloud container clusters get-credentials space-cluster --zone asia-southeast1-b --project My First Project'
+                  sh 'gcloud config set project slwidgets'
+                  sh 'gcloud container clusters get-credentials space-cluster --zone asia-southeast1-b --project slwidgets'
                   sh 'export KUBECONFIG=$(pwd)/config'
                   sh 'kubectl get nodes'
                   // sh 'kubectl create ns production'
@@ -84,12 +84,12 @@ EOF'''
            }
            post {
               always {
-                 mail to: 'pavaratharkana@gmail.com',
+                 mail to: 'janith2011@gmail.com',
                           subject: "Success Pipeline: ${currentBuild.fullDisplayName}",
                           body: "${PROJECT}/${APP_NAME}/${env.BRANCH_NAME}/${env.BUILD_NUMBER}"
                      }
               failure {
-                    mail to: 'pavaratharkana@gmail.com',
+                    mail to: 'janith2011@gmail.com',
                           subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
                           body: "Something is wrong with ${env.BUILD_URL}"
                       }
